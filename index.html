@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Заслуженные педагоги — Галерея и Памятная доска</title>
+  <meta name="description" content="Галерея и памятная доска заслуженных педагогических работников и учителей." />
+
+  <style>
+    :root{
+      --bg: #fbf7ee;
+      --paper: #fffaf0;
+      --ink: #0f1f2e;
+      --muted: #4b5b6b;
+      --line: #e6dcc9;
+
+      --navy: #102a43;
+      --navy-2: #0b2236;
+
+      --gold: #b08a2e;
+      --gold-soft: #f0e1b8;
+
+      --shadow: 0 12px 30px rgba(15,31,46,.10);
+      --shadow-soft: 0 10px 22px rgba(15,31,46,.07);
+      --radius: 18px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      color: var(--ink);
+      background: radial-gradient(1200px 700px at 20% 0%, #fff 0%, var(--bg) 55%, #f7f0e2 100%);
+      line-height: 1.55;
+    }
+
+    .grain{
+      position:fixed; inset:0;
+      pointer-events:none;
+      opacity:.10;
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='190' height='190'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='190' height='190' filter='url(%23n)' opacity='.25'/%3E%3C/svg%3E");
+      mix-blend-mode:multiply;
+    }
+
+    .container{
+      width: min(1100px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .hero{ padding: 64px 0 26px; }
+
+    .hero__title{
+      margin: 0 0 10px;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+    .hero__subtitle{
+      margin: 0;
+      max-width: 72ch;
+      color: var(--muted);
+      font-size: clamp(15px, 1.6vw, 18px);
+    }
+
+    .main{ padding: 6px 0 60px; }
+    .section{ padding: 32px 0; }
+    .section__head{ margin-bottom: 18px; }
+    .section__title{
+      margin: 0 0 8px;
+      font-size: 22px;
+      letter-spacing: -0.01em;
+    }
+    .section__desc{
+      margin: 0;
+      color: var(--muted);
+      max-width: 85ch;
+    }
+
+    .hero__subtitle:empty,
+    .section__desc:empty,
+    .footer__left:empty{
+      display:none;
+    }
+
+    .divider{
+      margin: 22px 0 12px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(16,42,67,.22), transparent);
+    }
+
+    .chips{
+      margin-top: 12px;
+      display:flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .chip{
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(16,42,67,.16);
+      background: rgba(255,255,255,.72);
+      color: var(--navy);
+      white-space: nowrap;
+    }
+
+    .board .board__frame{
+      position: relative;
+      border-radius: calc(var(--radius) + 6px);
+      background: linear-gradient(180deg, rgba(255,255,255,.75), rgba(255,250,240,.65));
+      border: 1px solid rgba(16,42,67,.14);
+      box-shadow: 0 18px 38px rgba(15,31,46,.10);
+      overflow: hidden;
+    }
+
+    .board .board__frame::before{
+      content:"";
+      position:absolute; inset: 12px;
+      border-radius: calc(var(--radius) + 2px);
+      border: 1px solid rgba(176,138,46,.35);
+      pointer-events:none;
+    }
+
+    .board .board__grid{
+      padding: 22px;
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .board__tile{
+      padding: 18px;
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.78);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(6px);
+      position: relative;
+      display:flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
+
+    .board__tile::after{
+      content:"";
+      position:absolute;
+      top: 12px; right: 12px;
+      width: 12px; height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, var(--gold-soft), var(--gold));
+      box-shadow: 0 10px 16px rgba(176,138,46,.22);
+    }
+
+    .medallion{
+      width: 84px; height: 84px;
+      border-radius: 999px;
+      margin: 2px auto 12px;
+      display:grid;
+      place-items:center;
+      background: radial-gradient(circle at 30% 30%, rgba(240,225,184,.75), rgba(255,255,255,.75));
+      border: 1px solid rgba(176,138,46,.40);
+      box-shadow: 0 18px 26px rgba(15,31,46,.10);
+      overflow:hidden;
+      flex: 0 0 auto;
+    }
+    .medallion__img{
+      width:100%;
+      height:100%;
+      object-fit: cover;
+      display:block;
+    }
+    .medallion__initials{
+      font-weight: 900;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+      font-size: 22px;
+    }
+
+    .board__name{
+      margin: 0;
+      text-align:center;
+      font-size: 16px;
+      letter-spacing: -0.01em;
+    }
+    .board__role{
+      margin: 6px 0 0;
+      text-align:center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .board__plaque{
+      margin-top: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(16,42,67,.14);
+      background: linear-gradient(180deg, rgba(16,42,67,.05), rgba(255,255,255,.55));
+      padding: 12px 12px;
+      flex: 0 0 auto;
+    }
+
+    .plaque__row{
+      display:flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 7px 0;
+      border-bottom: 1px dashed rgba(16,42,67,.12);
+    }
+    .plaque__row:last-child{ border-bottom: none; }
+    .plaque__row span{
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .plaque__row strong{
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 800;
+      text-align:right;
+    }
+
+    .board__note{
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      text-align:center;
+      flex: 1 1 auto;
+    }
+
+    .board__footer{ padding: 14px 22px 22px; }
+    .board__inscription{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap: 10px;
+      color: var(--navy);
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      text-align:center;
+    }
+    .mark{ color: var(--gold); }
+
+    body.many .container{
+      width: min(1280px, calc(100% - 36px));
+    }
+
+    body.many .board .board__grid{
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      padding: 18px;
+    }
+
+    body.many .medallion{
+      width: 68px; height: 68px;
+      margin: 0 auto 10px;
+    }
+    body.many .medallion__initials{ font-size: 18px; }
+
+    body.many .board__name{ font-size: 15px; }
+    body.many .board__role{ font-size: 12px; }
+
+    body.many .board__note{
+      font-size: 12px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    body.many .chip{
+      font-size: 11px;
+      padding: 5px 8px;
+    }
+
+    body.many .board__plaque{
+      padding: 10px 10px;
+      border-radius: 12px;
+    }
+    body.many .plaque__row span,
+    body.many .plaque__row strong{
+      font-size: 11px;
+    }
+
+    .footer{
+      padding: 30px 0 44px;
+      border-top: 1px solid rgba(16,42,67,.14);
+      background: rgba(255,255,255,.35);
+    }
+    .footer__inner{
+      display:flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items:flex-start;
+    }
+    .footer__meta{
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 6px;
+    }
+
+    @media (max-width: 640px){
+      .board .board__grid{ padding: 16px; }
+      .hero{ padding: 52px 0 22px; }
+      .footer__inner{ flex-direction: column; }
+    }
+  </style>
+</head>
+
+<!-- ✅ стартуем без "many", класс поставит JS при необходимости -->
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="hero">
+    <div class="container">
+      <h1 class="hero__title">Учителя-ветераны Экономического лицея</h1>
+      <p class="hero__subtitle"></p>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="section board">
+      <div class="container">
+        <div class="section__head">
+          <h2 class="section__title">Памятная доска</h2>
+          <p class="section__desc"></p>
+        </div>
+
+        <div class="board__frame">
+          <div id="boardMemorial" class="board__grid"></div>
+
+          <div class="board__footer">
+            <div class="board__inscription">
+              <span class="mark" aria-hidden="true">★</span>
+              <span>С благодарностью педагогам — за знания, характер и будущее</span>
+              <span class="mark" aria-hidden="true">★</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section board">
+      <div class="container">
+        <div class="section__head">
+          <h2 class="section__title">Педагоги-легенды</h2>
+          <p class="section__desc"></p>
+        </div>
+
+        <div class="board__frame">
+          <div id="boardLegends" class="board__grid"></div>
+
+          <div class="board__footer">
+            <div class="board__inscription">
+              <span class="mark" aria-hidden="true">★</span>
+              <span>С благодарностью педагогам — за знания, характер и будущее</span>
+              <span class="mark" aria-hidden="true">★</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__left"></div>
+      <div class="footer__right">
+        <div class="footer__meta">© <span id="y"></span></div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Год в футере
+    document.getElementById("y").textContent = new Date().getFullYear();
+
+    const memorialTeachers = [
+      {
+        name: "Мария Николаевна Юдкина",
+        subject: "Биология",
+        experience: "25 лет",
+        note: "За многолетний и добросовестный труд награждена медалями \"За трудовое отличие\", \"За освоение целинных земель\", \"За трудовую доблесть\".",
+        badgeStyle: "gold",
+        photo: "photos/mn.jpg",
+        photoPosition: "50% 20%"
+      },
+      {
+        name: "Михаил Серафимович Южаков",
+        subject: "Биология",
+        awards: "Отличник народного просвещения",
+        note: "Среди многочисленных заслуг Михаила Серафимовича: победа в номинации \"Лучшее методическое объединение конкурса \"Учитель года\"\" в 1993 г., почетное звание \"Отличник народного просвещения\".",
+        badgeStyle: "gold",
+        photo: "photos/ms.jpg",
+        photoPosition: "50% 20%"
+      },
+      {
+        name: "Нелли Ивановна Зыкова",
+        subject: "Английский язык",
+        note: "В 1970 году создала клуб интернациональной дружбы, который работал 20 лет. За это время мероприятия, организованные клубом, посетило около 9000 человек, а в гостях побывало 17 иностранных делегаций из Чехословакии, Венгрии, ГДР, Болгарии, Кубы, Италии, Испании.",
+        badgeStyle: "gold",
+        photo: "photos/ni.jpg",
+        photoPosition: "50% 20%"
+      }
+    ];
+
+    const legendTeachers = [
+      {
+        name: "Светлана Александровна Майснер",
+        subject: "Химия",
+        experience: "51 год",
+        awards: "Отличник народного просвещения",
+        note: "Внесла большой вклад в развитие образования НСО и работу с одаренными детьми.",
+        badgeStyle: "navy",
+        photo: "photos/sa.jpg",
+        photoPosition: "50% 50%"
+      },
+      {
+        name: "Валентина Анатольевна Белецкая",
+        subject: "История и обществознание",
+        experience: "45+",
+        awards: "Заслуженный учитель РФ",  // ✅ ДОБАВИЛ запятую
+        badgeStyle: "soft",
+        photo: "photos/va.jpg",
+        photoPosition: "50% 15%"
+      },
+      {
+        name: "Марина Павловна Колга",
+        subject: "Биология",
+        experience: "25 лет",
+        note: "Как классный руководитель воспитала несколько поколений учеников, развивая культуру класса и поддержку семей.",
+        badgeStyle: "soft",
+        photo: "photos/mp.jpg",
+        photoPosition: "50% 15%"
+      }
+    ];
+
+    const memorialGrid = document.getElementById("boardMemorial");
+    const legendsGrid = document.getElementById("boardLegends");
+
+    // Включаем плотную компоновку только если карточек много
+    const total = memorialTeachers.length + legendTeachers.length;
+    document.body.classList.toggle("many", total >= 12);
+
+    const esc = (s) => String(s ?? "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+
+    const initials = (fullName) => {
+      const parts = String(fullName || "").trim().split(/\s+/).filter(Boolean);
+      return parts.slice(0,2).map(p => (p[0] || "").toUpperCase()).join("");
+    };
+
+    const val = (x) => String(x ?? "").trim();
+
+    function createBoardTile(t){
+      const hasPhoto = !!val(t.photo);
+      const pos = val(t.photoPosition) || "50% 50%";
+
+      const roleText = t.role ?? t.subject ?? "";
+      const tags = Array.isArray(t.tags) ? t.tags : [];
+
+      // Собираем строки плашки только если значение есть
+      const rows = [];
+      const exp = val(t.experience);
+      const awards = val(t.awards);
+      const work = val(t.work);
+
+      if (exp) rows.push(`<div class="plaque__row"><span>Стаж</span><strong>${esc(exp)}</strong></div>`);
+      if (awards) rows.push(`<div class="plaque__row"><span>Награды</span><strong>${esc(awards)}</strong></div>`);
+      if (work) rows.push(`<div class="plaque__row"><span>Дело</span><strong>${esc(work)}</strong></div>`);
+
+      const plaqueHtml = rows.length
+        ? `<div class="board__plaque">${rows.join("")}</div>`
+        : ``;
+
+      const tile = document.createElement("article");
+      tile.className = "board__tile";
+      tile.innerHTML = `
+        <div class="medallion">
+          ${hasPhoto
+            ? `<img class="medallion__img" src="${esc(t.photo)}" alt="${esc(t.name)}" style="object-position:${esc(pos)}">`
+            : `<div class="medallion__initials" aria-hidden="true">${esc(initials(t.name))}</div>`
+          }
+        </div>
+
+        <h3 class="board__name">${esc(t.name)}</h3>
+        <p class="board__role">${esc(roleText)}</p>
+
+        ${tags.length
+          ? `<div class="chips">${tags.map(x => `<span class="chip">${esc(x)}</span>`).join("")}</div>`
+          : ``
+        }
+
+        ${plaqueHtml}
+
+        ${val(t.note) ? `<p class="board__note">${esc(t.note)}</p>` : ``}
+      `;
+      return tile;
+    }
+
+    function renderList(list, grid){
+      grid.textContent = "";
+      list.forEach(t => grid.appendChild(createBoardTile(t)));
+    }
+
+    renderList(memorialTeachers, memorialGrid);
+    renderList(legendTeachers, legendsGrid);
+  </script>
+</body>
+</html>
